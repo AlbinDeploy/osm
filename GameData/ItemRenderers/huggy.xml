@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ItemRenderer>
+	<Data>
+		<!--
+			huggy_single.rttex layout (80x94 per frame, 1600x470 total):
+			  Row 0 → SingDown  (10 frames: col 0-9)
+			  Row 1 → SingUp    (10 frames: col 0-9)
+			  Row 2 → SingLeft  (10 frames: col 0-9)
+			  Row 3 → SingRight (10 frames: col 0-9)
+			  Row 4 → Idle/Walk (20 frames: col 0-19)
+		-->
+		<Sprite name="huggy_all"   fileName="game/huggy_single.rttex" textureSize="320,376"/>
+		<StateMachines>
+			<StateMachine name="Motion">
+				<States>
+					<State name="Idle" />
+					<State name="Move" />
+					<State name="Jump" />
+					<State name="Fall" />
+					<State name="Punch" />
+					<State name="Dance" />
+					<State name="dance1" />
+					<State name="dance2" />
+					<State name="dance3" />
+				</States>
+				<Transitions>
+					<Transition to="Idle" from="Fall|Move|Jump|Punch|Dance|dance1|dance2|dance3">
+						<Condition type="and">
+							<IsVariableBool name="onGround">true</IsVariableBool>
+							<IsVariableFloat name="speed.length" operator="Less" abs="true">0.1</IsVariableFloat>
+							<IsVariableBool name="isAttacking">false</IsVariableBool>
+							<IsAction operatorType="NotEqual">PUNCH</IsAction>
+							<IsAction operatorType="NotEqual">DANCE</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_DAB</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_FLOSS</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_MARCH</IsAction>
+						</Condition>
+					</Transition>
+					<Transition to="Move" from="Jump|Fall|Idle|Punch|Dance|dance1|dance2|dance3">
+						<Condition type="and">
+							<IsVariableBool name="onGround">true</IsVariableBool>
+							<IsVariableFloat name="speed.length" operator="Greater" abs="true">0.1</IsVariableFloat>
+							<IsAction operatorType="NotEqual">PUNCH</IsAction>
+							<IsAction operatorType="NotEqual">DANCE</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_DAB</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_FLOSS</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_MARCH</IsAction>
+						</Condition>
+					</Transition>
+					<Transition to="Jump" from="Idle|Move|Fall|Punch|Dance|dance1|dance2|dance3">
+						<Condition type="and">
+							<IsVariableBool name="onGround">false</IsVariableBool>
+							<IsVariableFloat name="speed.y" operator="Less">-0.1</IsVariableFloat>
+							<IsAction operatorType="NotEqual">PUNCH</IsAction>
+							<IsAction operatorType="NotEqual">DANCE</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_DAB</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_FLOSS</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_MARCH</IsAction>
+						</Condition>
+					</Transition>
+					<Transition to="Fall" from="Jump|Idle|Move|Punch|Dance|dance1|dance2|dance3">
+						<Condition type="and">
+							<IsVariableBool name="onGround">false</IsVariableBool>
+							<IsVariableFloat name="speed.y" operator="Greater">0.1</IsVariableFloat>
+							<IsAction operatorType="NotEqual">PUNCH</IsAction>
+							<IsAction operatorType="NotEqual">DANCE</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_DAB</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_FLOSS</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_MARCH</IsAction>
+						</Condition>
+					</Transition>
+					<Transition to="Punch" from="Idle|Move|Jump|Fall|Dance|dance1|dance2|dance3">
+						<Condition type="and">
+							<IsAction>PUNCH</IsAction>
+							<IsAction operatorType="NotEqual">DANCE</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_DAB</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_FLOSS</IsAction>
+							<IsAction operatorType="NotEqual">DANCE_MARCH</IsAction>
+						</Condition>
+					</Transition>
+					<Transition to="Dance" from="Move|Idle|Punch|Jump|Fall">
+						<Condition type="or">
+							<IsAction>DANCE</IsAction>
+							<IsAction>DANCE_DAB</IsAction>
+							<IsAction>DANCE_FLOSS</IsAction>
+							<IsAction>DANCE_MARCH</IsAction>
+						</Condition>
+					</Transition>
+					<Transition to="dance1" from="Dance|dance3">
+						<Condition type="or">
+							<IsAnimationFinished>dance_anim3</IsAnimationFinished>
+							<IsState>Motion.Dance</IsState>
+						</Condition>
+					</Transition>
+					<Transition to="dance2" from="dance1">
+						<Condition>
+							<IsAnimationFinished>dance_anim1</IsAnimationFinished>
+						</Condition>
+					</Transition>
+					<Transition to="dance3" from="dance2">
+						<Condition>
+							<IsAnimationFinished>dance_anim2</IsAnimationFinished>
+						</Condition>
+					</Transition>
+				</Transitions>
+			</StateMachine>
+		</StateMachines>
+		<Animations>
+			<!-- dance_anim1 → MX_DANCE_1 (up) → Row 1 -->
+			<SpriteAnimation name="dance_anim1" playOnState="Motion.dance1" sprite="huggy_all" animTime="430">
+				<Frame>0,1</Frame>
+				<Frame>1,1</Frame>
+				<Frame>1,1</Frame>
+				<Frame>2,1</Frame>
+				<Frame>3,1</Frame>
+				<Frame>4,1</Frame>
+				<Frame>5,1</Frame>
+				<Frame>6,1</Frame>
+				<Frame>7,1</Frame>
+				<Frame>8,1</Frame>
+			</SpriteAnimation>
+			<!-- dance_anim2 → MX_DANCE_2 (left) → Row 2 -->
+			<SpriteAnimation name="dance_anim2" playOnState="Motion.dance2" sprite="huggy_all" animTime="430">
+				<Frame>0,2</Frame>
+				<Frame>1,2</Frame>
+				<Frame>2,2</Frame>
+				<Frame>3,2</Frame>
+				<Frame>4,2</Frame>
+				<Frame>5,2</Frame>
+				<Frame>6,2</Frame>
+				<Frame>7,2</Frame>
+				<Frame>8,2</Frame>
+			</SpriteAnimation>
+			<!-- dance_anim3 → MX_DANCE_3 (down) → Row 0 -->
+			<SpriteAnimation name="dance_anim3" playOnState="Motion.dance3" sprite="huggy_all" animTime="430">
+				<Frame>0,0</Frame>
+				<Frame>1,0</Frame>
+				<Frame>2,0</Frame>
+				<Frame>3,0</Frame>
+				<Frame>4,0</Frame>
+				<Frame>5,0</Frame>
+				<Frame>6,0</Frame>
+				<Frame>7,0</Frame>
+				<Frame>8,0</Frame>
+			</SpriteAnimation>
+			<!-- Idle → Row 4 (first 6 of 20 idle frames) -->
+			<SpriteAnimation name="huggy_Idle_Animation" playOnState="Motion.Idle" sprite="huggy_all" animTime="530" isLoop="true">
+				<Frame>0,4</Frame>
+				<Frame>1,4</Frame>
+				<Frame>2,4</Frame>
+				<Frame>3,4</Frame>
+				<Frame>4,4</Frame>
+				<Frame>5,4</Frame>
+			</SpriteAnimation>
+			<!-- Jump → Row 1 frame 0 (UP pose) -->
+			<SpriteAnimation name="huggy_Jump_Animation" playOnState="Motion.Jump" sprite="huggy_all" animTime="300">
+				<Frame>0,1</Frame>
+			</SpriteAnimation>
+			<!-- Fall → Row 1 frame 1 -->
+			<SpriteAnimation name="huggy_Fall_Animation" playOnState="Motion.Fall" sprite="huggy_all" animTime="300">
+				<Frame>1,1</Frame>
+			</SpriteAnimation>
+			<!-- Walk → Row 4 (all 20 idle frames as walk cycle) -->
+			<SpriteAnimation name="huggy_Walk_Animation" playOnState="Motion.Move" sprite="huggy_all" animTime="300" isLoop="true">
+				<Frame>0,4</Frame>
+				<Frame>1,4</Frame>
+				<Frame>2,4</Frame>
+				<Frame>3,4</Frame>
+				<Frame>4,4</Frame>
+				<Frame>5,4</Frame>
+				<Frame>6,4</Frame>
+				<Frame>7,4</Frame>
+			</SpriteAnimation>
+		</Animations>
+		<TileStampData>
+			<Set name="FileName">game/particles9.rttex</Set>
+			<Set name="EndFrame">28,17</Set>
+			<Set name="FrameCount">4</Set>
+		</TileStampData>
+		<ParticleSystems>
+		</ParticleSystems>
+		<RenderOptions>
+			<Default>
+				<Set name="JumpEndStateRange">100</Set>
+				<Set name="ClothingOffsetFromShoes">10000</Set>
+				<Set name="IsRidingBird">true</Set>
+				<Set name="IsVehicle">true</Set>
+				<Set name="UserNameOffset">75</Set>
+				<Set name="RenderShoesWithMermaidTail">true</Set>
+				<Set name="ShoesHidesBodyLegs">true</Set>
+				<Set name="IsToRenderPants">false</Set>
+				<Set name="IncludeAllActions">true</Set>
+				<Set name="IgnoreDefaultDamagedTileEffect">true</Set>
+				<Set name="IgnoreDefaultDestroyedTileEffect">true</Set>
+			</Default>
+			<Override overrideOnState="Motion.dance1|Motion.dance2|Motion.dance3">
+				<Set name="UserNameOffset">120</Set>
+			</Override>
+		</RenderOptions>
+	</Data>
+	<RenderRules>
+		<Update>
+			<AvatarTransform class="FootPosition" onState="Motion.Dance|Motion.dance1|Motion.dance2|Motion.dance3">
+				<Set name="foot1dy">0</Set>
+				<Set name="foot2dy">0</Set>
+				<Set name="foot1y">0</Set>
+				<Set name="foot2y">0</Set>
+			</AvatarTransform>
+			<AvatarTransform class="ActionUpdate" onState="Motion.Dance|Motion.dance1|Motion.dance2|Motion.dance3">
+				<Set name="action">NOD</Set>
+			</AvatarTransform>
+		</Update>
+		<RenderInFront>
+			<StopIf>
+				<IsVariableBool name="isMannequin">true</IsVariableBool>
+				<IsRenderMod>RENDER_MOD_MINI_YOU</IsRenderMod>
+			</StopIf>
+			<!-- dance1 = UP row → scale 0.30 (frame lebih tinggi) -->
+			<SpriteRender name="huggy_all" offset="0,-10060" drawShadow="true" onState="Motion.dance1" scale="0.30,0.30"/>
+			<!-- dance2 = LEFT row → scale 0.45 (frame lebih kecil, scale up) -->
+			<SpriteRender name="huggy_all" offset="0,-10060" drawShadow="true" onState="Motion.dance2" scale="0.30,0.30"/>
+			<!-- dance3 = DOWN row → scale 0.35 -->
+			<SpriteRender name="huggy_all" offset="0,-10060" drawShadow="true" onState="Motion.dance3" scale="0.30,0.30"/>
+			<SpriteRender name="huggy_all" offset="0,-10060" drawShadow="true" onState="Motion.Idle"  scale="0.30,0.30"/>
+			<SpriteRender name="huggy_all" offset="0,-10060" drawShadow="true" onState="Motion.Punch" scale="0.30,0.30"/>
+			<SpriteRender name="huggy_all" offset="0,-10060" drawShadow="true" onState="Motion.Move"  scale="0.30,0.30"/>
+			<SpriteRender name="huggy_all" offset="4,-10060" drawShadow="true" onState="Motion.Jump"  scale="0.30,0.30"/>
+			<SpriteRender name="huggy_all" offset="0,-10060" drawShadow="true" onState="Motion.Fall"  scale="0.30,0.30"/>
+			<MusicSource onState="Motion.dance1|Motion.dance2|Motion.dance3">
+				<Set name="ItemID">ITEM_ID_ROLLBACK_II</Set>
+				<Set name="FadeOutTimeMs">500</Set>
+			</MusicSource>
+		</RenderInFront>
+		<RenderShoes>
+			<StopIf>
+				<IsSitting>true</IsSitting>
+				<IsSleepingOnaBed>true</IsSleepingOnaBed>
+				<IsWearing slot="SHIRT">ITEM_ID_TACTICAL_STEALTH_DEVICE</IsWearing>
+			</StopIf>
+		</RenderShoes>
+	</RenderRules>
+</ItemRenderer>
